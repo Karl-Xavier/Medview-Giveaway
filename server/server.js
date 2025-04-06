@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 4040
 
 // frontend url and callback
 
-const frontend_url = nodeEnv === 'development' ? 'http://127.0.0.1:5500' : ''
+const frontend_url = nodeEnv === 'development' ? 'http://127.0.0.1:5500' : 'https://medview-giveaway.vercel.app'
 
 // CORS SETUP
 
